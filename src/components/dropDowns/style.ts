@@ -18,9 +18,9 @@ export const MenuDropDownWrapper = styled("div")(({ theme }) => ({
   left: "0",
   position: "absolute",
   flexDirection: "column",
-  ...dropDownAnimation,
   border: "1px solid" + theme.palette.divider,
   backgroundColor: theme.palette.background.default,
+  ...dropDownAnimation,
   [theme.breakpoints.down("md")]: {
     display: "flex",
   },
@@ -35,8 +35,8 @@ export const CurrenciesDropDownWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
   visibility: "hidden",
   flexDirection: "column",
-  ...dropDownAnimation,
   backgroundColor: theme.palette.background.default,
+  ...dropDownAnimation,
   border: "1px solid" + theme.palette.divider,
   [theme.breakpoints.down("md")]: {
     top: "55px",
@@ -68,10 +68,10 @@ export const CartDropDownWrapper = styled("div")(({ theme }) => ({
   flexDirection: "column",
   overflowY: "auto",
   maxHeight: "679px",
-  ...dropDownAnimation,
   border: "1px solid" + theme.palette.divider,
   padding: "32px 16px",
   backgroundColor: theme.palette.background.default,
+  ...dropDownAnimation,
   "&::-webkit-scrollbar": {
     width: "5px",
     [theme.breakpoints.down("xs")]: {

@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProductType } from "../GraphQL/products";
 
-
-
 interface CartItem {
   product: ProductType;
   quantity: number;

@@ -126,6 +126,12 @@ export const CartProductImg = styled(Box)(({ theme }) => ({
   position: "relative",
   margin: "auto 0",
   backgroundColor: "white",
+  "& img": {
+    width: "inherit",
+    height: "inherit",
+    objectFit: "contain",
+    backgroundColor: "white",
+  },
   "& .arrows": {
     display: "flex",
     flexDirection: "row",

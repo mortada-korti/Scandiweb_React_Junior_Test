@@ -95,7 +95,7 @@ const Header = () => {
         )}
       </MobileMenuIcon>
 
-      {isMenuToggled && <MenuDropDown isMenuToggled={isMenuToggled} />}
+      {isMenuToggled && <MenuDropDown isMenuToggled={isMenuToggled} setIsMenuToggled={setIsMenuToggled} />}
 
       {/* NAVIGATION LINKS */}
       <Navigation>
@@ -131,7 +131,10 @@ const Header = () => {
               <CartIcon />
             </Badge>
           </div>
-          <CartDropDown isCartToggled={isCartToggled} />
+          <CartDropDown
+            setIsCartToggled={setIsCartToggled}
+            isCartToggled={isCartToggled}
+          />
         </div>
       </Actions>
     </HeaderWrapper>

@@ -1,40 +1,34 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { addToCart, removeFromCart } from "../../redux/cartSlice";
-import { PageContainer } from "../../shared/style";
-import { CartTitle } from "./style";
-import {
-  AddToCartButton,
-  CustomTitle,
-  ProductName,
-  ProductPrice,
-  ViewBagButton,
-} from "../product/style";
-import { Box, Stack, Typography } from "@mui/material";
-import {
-  AttributeItemsContainer,
-  AttributeTitle,
-} from "../../components/attributes/style";
-import { Input } from "../../components/attributes/Swatch";
-import { RadioInput } from "../../components/attributes/Text";
-import CartProduct from "./CartProduct";
-import CartFooter from "./CartFooter";
 import { useNavigate } from "react-router-dom";
 
-type Props = {};
+// Redux
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
-const Cart = (props: Props) => {
+// Components
+import CartProduct from "./CartProduct";
+import CartFooter from "./CartFooter";
+
+// Functions
+import { getCurrencyIndex } from "../../functions";
+
+// @mui
+import { Stack } from "@mui/material";
+
+// Styles
+import { AddToCartButton, CustomTitle } from "../product/style";
+import { PageContainer } from "../../shared/style";
+import { CartTitle } from "./style";
+
+const Cart = () => {
+  const navigate = useNavigate();
+  // Redux
   const cart = useSelector((state: RootState) => state.cart);
   const selectedCurrency = useSelector((state: RootState) => state.currency);
-  const currencyIndex = cart.items.map((item) =>
-    item.product.prices.findIndex(
-      (e) => e.currency.symbol === selectedCurrency.symbol
-    )
-  )[0];
-  const navigate = useNavigate();
+  const currencyIndex = getCurrencyIndex(selectedCurrency, cart);
 
   return (
     <PageContainer>
+      {/* IF CART IS EMPTY */}
       {cart.items.length === 0 ? (
         <Stack gap='50px'>
           <CustomTitle fw='700' fs='50px' lh='50px'>
@@ -46,27 +40,22 @@ const Cart = (props: Props) => {
         </Stack>
       ) : (
         <>
+          {/* CART HEADER */}
           <CartTitle>CART</CartTitle>
 
+          {/* CART PRODUCTS */}
           {cart.items.map((item, index) => (
             <CartProduct
               key={index}
-              currencyIndex={currencyIndex}
-              brand={item.product.brand}
-              name={item.product.name}
-              attributes={item.product.attributes}
-              inStock={item.product.inStock}
-              prices={item.product.prices}
-              gallery={item.product.gallery}
-              category={item.product.category}
-              id={item.product.id}
-              description={item.product.description}
+              currencyIndex={currencyIndex ?? 0}
               quantity={item.quantity}
+              product={item.product}
             />
           ))}
 
+          {/* CART FOOTER */}
           <CartFooter
-            currencyIndex={currencyIndex}
+            currencyIndex={currencyIndex ?? 0}
             cart={cart}
             selectedCurrency={selectedCurrency}
           />

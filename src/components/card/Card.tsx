@@ -9,43 +9,39 @@ import CartIcon from "../../icons/CartIcon";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { addToCart } from "../../redux/cartSlice";
+
+// Functions
+import { getCurrencyIndex } from "../../functions";
+
+// @mui
+import { Stack } from "@mui/material";
 
 // Styles
 import {
   CardImg,
-  CardInfo,
   CardPrice,
   CardTitle,
   CardWrapper,
   CartIconWrapper,
 } from "./style";
-import { addToCart } from "../../redux/cartSlice";
 
-const Card = ({
-  id,
-  name,
-  inStock,
-  gallery,
-  prices,
-  category,
-  brand,
-  description,
-  attributes,
-}: ProductType) => {
+type Props = {
+  product: ProductType;
+};
+
+const Card = ({ product }: Props) => {
   // Redux
-  const selectedCurrency = useSelector((state: RootState) => state.currency);
-  const cart = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
-  // console.log(cart);
-  const currenyIndex = prices.findIndex(
-    (e) => e.currency.symbol === selectedCurrency.symbol
-  );
+  const selectedCurrency = useSelector((state: RootState) => state.currency);
+  const currencyIndex = getCurrencyIndex(selectedCurrency, undefined, product);
+
   return (
     <CardWrapper>
       {/* CARD IMAGE */}
-      <CardImg className={`${inStock ? "" : "out-of-stock"}`}>
-        <Link to={`/${category}/${id}`}>
-          <img src={gallery[0]} alt='product' />
+      <CardImg className={`${product.inStock ? "" : "out-of-stock"}`}>
+        <Link to={`/${product.category}/${product.id}`}>
+          <img src={product.gallery[0]} alt='product' />
         </Link>
 
         <CartIconWrapper
@@ -53,15 +49,15 @@ const Card = ({
           onClick={() =>
             dispatch(
               addToCart({
-                id: id,
-                name: name,
-                prices: prices,
-                gallery: gallery,
-                category: category,
-                inStock: inStock,
-                brand: brand,
-                description: description,
-                attributes: attributes,
+                id: product.id,
+                name: product.name,
+                prices: product.prices,
+                gallery: product.gallery,
+                category: product.category,
+                inStock: product.inStock,
+                brand: product.brand,
+                description: product.description,
+                attributes: product.attributes,
               })
             )
           }>
@@ -70,13 +66,13 @@ const Card = ({
       </CardImg>
 
       {/* CARD INFO */}
-      <CardInfo>
-        <CardTitle>{name}</CardTitle>
+      <Stack>
+        <CardTitle>{product.name}</CardTitle>
         <CardPrice>
-          {prices[currenyIndex].currency?.symbol}
-          {prices[currenyIndex]?.amount}
+          {product.prices[currencyIndex ?? 0].currency?.symbol}
+          {product.prices[currencyIndex ?? 0]?.amount}
         </CardPrice>
-      </CardInfo>
+      </Stack>
     </CardWrapper>
   );
 };

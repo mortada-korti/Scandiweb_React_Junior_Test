@@ -1,62 +1,61 @@
 import { useNavigate } from "react-router-dom";
-import { CartDropDownWrapper } from "./style";
-import { Typography, Stack, Box } from "@mui/material";
+
+// Redux
+import { addToCart, removeFromCart } from "../../redux/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+
+// GraphQL
+import { AttributeType, PriceType } from "../../GraphQL/products";
+
+// Functions
+import {
+  getCurrencyIndex,
+  getTotalPriceBeforeTax,
+  getTotalQuantity,
+} from "../../functions";
+
+// @mui
+import { Typography, Stack } from "@mui/material";
+
+// Styles
+import { CartDropDownWrapper } from "./style";
+import { CartProductImg, QuantityAction } from "../../pages/cart/style";
+import { SwatchInput } from "../attributes/Swatch";
+import { TextInput } from "../attributes/Text";
 import {
   AddToCartButton,
   CustomTitle,
   ProductHeader,
-  ProductPrice,
   ViewBagButton,
 } from "../../pages/product/style";
-import { AttributeItemsContainer, AttributeTitle } from "../attributes/style";
-import { Input } from "../attributes/Swatch";
-import { RadioInput } from "../attributes/Text";
-import {
-  CartProductGallery,
-  CartProductImg,
-  HandleQuantity,
-  QuantityAction,
-} from "../../pages/cart/style";
-import ArrowLefIcon from "../../icons/ArrowLefIcon";
-import ArrowRightIcon from "../../icons/ArrowRightIcon";
-import { useState } from "react";
-import { styled } from "@mui/material";
-import { addToCart, removeFromCart } from "../../redux/cartSlice";
-import { AttributeType, PriceType } from "../../GraphQL/products";
+
 type Props = {
   isCartToggled: boolean;
+  setIsCartToggled: (value: boolean) => void;
 };
 
-const CartDropDown = ({ isCartToggled }: Props) => {
+const CartDropDown = ({ isCartToggled, setIsCartToggled }: Props) => {
   const navigate = useNavigate();
+  // Redux
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const selectedCurrency = useSelector((state: RootState) => state.currency);
-  const [imgIndex, setImgIndex] = useState<number>(0);
-  const currencyIndex = cart.items.map((item) =>
-    item.product.prices.findIndex(
-      (e) => e.currency.symbol === selectedCurrency.symbol
-    )
-  )[0];
-  let totalQuantity = 0;
-  let totalPrice = 0;
-  cart.items.map((item) => (totalQuantity += item.quantity));
-  cart.items.map(
-    (item) =>
-      (totalPrice +=
-        item.quantity * parseFloat(item.product.prices[currencyIndex].amount))
-  );
+  const currencyIndex = getCurrencyIndex(selectedCurrency, cart) ?? 0;
 
   return (
     <CartDropDownWrapper className={`${isCartToggled ? "active" : ""}`}>
+      {/* IF CART IS EMPTY */}
       {cart.items.length === 0 ? (
         <Stack gap='20px'>
           <CustomTitle fw='700' fs='20px' lh='20px'>
             Your Cart is Empty
           </CustomTitle>
-          <ViewBagButton onClick={() => navigate("/cart")} p='20px'>
+          <ViewBagButton
+            onClick={() => {
+              navigate("/cart"), setIsCartToggled(false);
+            }}
+            p='20px'>
             View Bag
           </ViewBagButton>
         </Stack>
@@ -67,9 +66,10 @@ const CartDropDown = ({ isCartToggled }: Props) => {
             <CustomTitle lh='25.6px' fw='700'>
               My Bag.
             </CustomTitle>
-            {totalQuantity > 0 && (
+            {getTotalQuantity(cart) > 0 && (
               <CustomTitle lh='25.6px' fw='500'>
-                {totalQuantity} {totalQuantity === 1 ? "item" : "items"}
+                {getTotalQuantity(cart)}
+                {getTotalQuantity(cart) === 1 ? "item" : "items"}
               </CustomTitle>
             )}
           </Stack>
@@ -107,7 +107,7 @@ const CartDropDown = ({ isCartToggled }: Props) => {
                       <Stack direction='row' flexWrap='wrap' gap='8px'>
                         {attribute.type === "swatch"
                           ? attribute.items.map((item, index) => (
-                              <Input
+                              <SwatchInput
                                 key={index}
                                 value={item.value}
                                 w='24px'
@@ -120,10 +120,10 @@ const CartDropDown = ({ isCartToggled }: Props) => {
                                 />
                                 <label
                                   htmlFor={`custom-radio-${item.id}`}></label>
-                              </Input>
+                              </SwatchInput>
                             ))
                           : attribute.items.map((itm, index) => (
-                              <RadioInput
+                              <TextInput
                                 w='24px'
                                 h='24px'
                                 fs='14px'
@@ -135,7 +135,7 @@ const CartDropDown = ({ isCartToggled }: Props) => {
                                   name={`${attribute.name}${item.product.id}`}
                                 />
                                 <label>{itm.value}</label>
-                              </RadioInput>
+                              </TextInput>
                             ))}
                       </Stack>
                     </Stack>
@@ -177,16 +177,7 @@ const CartDropDown = ({ isCartToggled }: Props) => {
                     />
                   </Stack>
                   <CartProductImg width='121px' height='190px'>
-                    <img
-                      src={item.product.gallery[imgIndex]}
-                      alt=''
-                      style={{
-                        width: "inherit",
-                        height: "inherit",
-                        objectFit: "contain",
-                        backgroundColor: "white",
-                      }}
-                    />
+                    <img src={item.product.gallery[0]} alt='product-img' />
                   </CartProductImg>
                 </Stack>
               </Stack>
@@ -195,7 +186,7 @@ const CartDropDown = ({ isCartToggled }: Props) => {
               <Typography fontWeight='500'>Total</Typography>
               <Typography fontFamily='Raleway, sans-serif' fontWeight='700'>
                 {selectedCurrency.symbol}
-                {totalPrice.toFixed(2)}
+                {getTotalPriceBeforeTax(cart, currencyIndex)}
               </Typography>
             </Stack>
           </Stack>
@@ -203,11 +194,15 @@ const CartDropDown = ({ isCartToggled }: Props) => {
             <ViewBagButton
               p='13px'
               sx={{ flex: 1 }}
-              onClick={() => navigate("/cart")}>
+              onClick={() => {
+                navigate("/cart"), setIsCartToggled(false);
+              }}>
               View bag
             </ViewBagButton>
             <AddToCartButton
-              onClick={() => navigate("/cart")}
+              onClick={() => {
+                navigate("/cart"), setIsCartToggled(false);
+              }}
               p='13px'
               sx={{ flex: 1 }}>
               checkout

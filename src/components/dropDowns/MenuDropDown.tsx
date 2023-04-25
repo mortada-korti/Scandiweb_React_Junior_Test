@@ -10,17 +10,22 @@ import { NavItem } from "../header/style";
 
 type Props = {
   isMenuToggled: boolean;
+  setIsMenuToggled: (value: boolean) => void;
 };
 
-const MenuDropDown = ({ isMenuToggled }: Props) => {
+const MenuDropDown = ({ isMenuToggled, setIsMenuToggled }: Props) => {
   // GraphQL
-  const { loading, error, data } = useQuery<CategoriesType>(GET_ALL_CATEGORIES);
+  const { data } = useQuery<CategoriesType>(GET_ALL_CATEGORIES);
 
   return (
     <MenuDropDownWrapper className={`${isMenuToggled ? "active" : ""}`}>
       {data?.categories.map((category, index) => (
         <NavItem key={index}>
-          <NavLink to={`${category.name}`}>{category.name}</NavLink>
+          <NavLink
+            onClick={() => setIsMenuToggled(false)}
+            to={`${category.name}`}>
+            {category.name}
+          </NavLink>
         </NavItem>
       ))}
     </MenuDropDownWrapper>

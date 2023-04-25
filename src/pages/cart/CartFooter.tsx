@@ -1,8 +1,20 @@
-import { Stack, Typography, styled } from "@mui/material";
-import { CartFooterWrapper } from "./style";
-import { AddToCartButton } from "../product/style";
+// Redux
 import { CartState } from "../../redux/cartSlice";
 import { currencyState } from "../../redux/currencySlice";
+
+// Functions
+import {
+  getTax,
+  getTotalPriceAfterTax,
+  getTotalQuantity,
+} from "../../functions";
+
+// @mui
+import { Stack, Typography, styled } from "@mui/material";
+
+// Styles
+import { CartFooterWrapper } from "./style";
+import { AddToCartButton } from "../product/style";
 
 type Props = {
   cart: CartState;
@@ -11,29 +23,6 @@ type Props = {
 };
 
 const CartFooter = ({ cart, selectedCurrency, currencyIndex }: Props) => {
-  const getTotalBeforeTax = () => {
-    let totalBeforeTax = 0;
-    cart.items.map(
-      (item) =>
-        (totalBeforeTax +=
-          item.quantity * parseFloat(item.product.prices[currencyIndex].amount))
-    );
-    return parseFloat(totalBeforeTax.toFixed(2));
-  };
-
-  const getTotalQuantity = () => {
-    let totalQuantity = 0;
-    cart.items.map((item) => (totalQuantity += item.quantity));
-    return totalQuantity;
-  };
-
-  const getTax = () => {
-    return (21 * getTotalBeforeTax()) / 100;
-  };
-
-  const getTotalAfterTax = () => {
-    return (getTotalBeforeTax() + getTax()).toFixed(2);
-  };
   return (
     <CartFooterWrapper>
       <Container>
@@ -44,7 +33,7 @@ const CartFooter = ({ cart, selectedCurrency, currencyIndex }: Props) => {
           </Typography>
           <Typography component='span' className='value'>
             {selectedCurrency.symbol}
-            {getTax().toFixed(2)}
+            {getTax(cart, currencyIndex)}
           </Typography>
         </Stack>
 
@@ -54,7 +43,7 @@ const CartFooter = ({ cart, selectedCurrency, currencyIndex }: Props) => {
             Quantity:
           </Typography>
           <Typography component='span' className='value'>
-            {getTotalQuantity()}
+            {getTotalQuantity(cart)}
           </Typography>
         </Stack>
 
@@ -65,7 +54,7 @@ const CartFooter = ({ cart, selectedCurrency, currencyIndex }: Props) => {
           </Typography>
           <Typography component='span' className='value'>
             {selectedCurrency.symbol}
-            {getTotalAfterTax()}
+            {getTotalPriceAfterTax(cart, currencyIndex)}
           </Typography>
         </Stack>
 

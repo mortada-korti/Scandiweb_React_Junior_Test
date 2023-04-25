@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 // GraphQL
 import { useQuery } from "@apollo/client";
@@ -7,12 +7,15 @@ import { CategoryType, GET_PRODUCTS_BY_CATEGORY } from "../../GraphQL/products";
 // Components
 import Card from "../../components/card/Card";
 
+// Pages
+import NotFound from "../notFound/NotFound";
+
+// @mui
+import { Skeleton, Stack } from "@mui/material";
+
 // Styles
 import { PageContainer } from "../../shared/style";
 import { CategoryTitle, ProductsContainer } from "./style";
-import NotFound from "../notFound/NotFound";
-import { useEffect, useState } from "react";
-import { Skeleton, Stack } from "@mui/material";
 
 const Category = () => {
   const { category } = useParams();
@@ -22,6 +25,7 @@ const Category = () => {
     GET_PRODUCTS_BY_CATEGORY,
     { variables: { category: category } }
   );
+
   const skeletonData = Array.from({ length: 9 });
 
   if (data?.category === null) return <NotFound />;
@@ -30,7 +34,7 @@ const Category = () => {
       {loading ? (
         <Skeleton
           animation='wave'
-          sx={{ marginBottom: "80px", height: "80px", width: "200px" }}
+          sx={{ marginBottom: "80px", height: "80px" }}
         />
       ) : (
         <CategoryTitle>{category}</CategoryTitle>
@@ -54,18 +58,7 @@ const Category = () => {
       ) : (
         <ProductsContainer>
           {data?.category.products.map((product, index) => (
-            <Card
-              key={index}
-              name={product.name}
-              id={product.id}
-              inStock={product.inStock}
-              gallery={product.gallery}
-              prices={product.prices}
-              category={product.category}
-              brand={product.brand}
-              attributes={product.attributes}
-              description={product.description}
-            />
+            <Card key={index} product={product} />
           ))}
         </ProductsContainer>
       )}

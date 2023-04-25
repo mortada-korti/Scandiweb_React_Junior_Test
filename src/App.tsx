@@ -15,6 +15,7 @@ import Header from "./components/header/Header";
 // Pages
 import Category from "./pages/category/Category";
 import Product from "./pages/product/Product";
+import NotFound from "./pages/notFound/NotFound";
 
 // @mui
 import { theme } from "./theme/theme";
@@ -24,7 +25,6 @@ import { Box } from "@mui/material";
 // Styles
 import { Container } from "./shared/style";
 import Cart from "./pages/cart/Cart";
-import NotFound from "./pages/notFound/NotFound";
 
 function App() {
   const darkMode = useSelector((state: RootState) => state.darkMode.value);
@@ -60,7 +60,7 @@ function App() {
           element: <Cart />,
         },
         {
-          path: "/notFound",
+          path: "*",
           element: <NotFound />,
         },
       ],

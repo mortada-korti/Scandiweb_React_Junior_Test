@@ -1,6 +1,6 @@
 import { styled, Box } from "@mui/material";
 
-export const Input = styled(Box)<any>(({ theme, value, w, h }) => ({
+export const SwatchInput = styled(Box)<any>(({ theme, value, w, h }) => ({
   position: "relative",
   "& .visually-hidden": {
     cursor: "pointer",

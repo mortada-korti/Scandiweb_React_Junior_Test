@@ -9,6 +9,10 @@ export const HeaderWrapper = styled("header")(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     height: "65px",
     padding: "12px 5px",
+    position: "sticky",
+    top: 0,
+    backgroundColor: theme.palette.background.default,
+    zIndex: 999,
   },
 }));
 

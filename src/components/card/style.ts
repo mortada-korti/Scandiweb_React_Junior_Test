@@ -77,11 +77,6 @@ export const CardImg = styled("div")(({ theme }) => ({
   },
 }));
 
-export const CardInfo = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-}));
-
 export const CardTitle = styled("span")(({ theme }) => ({
   fontWeight: 300,
   fontSize: "18px",

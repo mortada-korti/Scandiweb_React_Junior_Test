@@ -71,31 +71,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
 `;
 
 export type ProductInfoType = {
-  product: {
-    id: string;
-    name: string;
-    inStock: boolean;
-    gallery: string[];
-    category: string;
-    description: string;
-    attributes: {
-      id: string;
-      name: string;
-      type: string;
-      items: {
-        id: string;
-        value: string;
-        displayValue: string;
-      }[];
-    }[];
-    prices: {
-      currency: {
-        symbol: string;
-      };
-      amount: string;
-    }[];
-    brand: string;
-  };
+  product: ProductType;
 };
 
 export const GET_PRODUCT_INFO = gql`

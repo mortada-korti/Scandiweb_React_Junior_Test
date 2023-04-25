@@ -20,7 +20,7 @@ const CurrenciesDropDown = ({ isCurrenciesToggled }: Props) => {
   const selectedCurrency = useSelector((state: RootState) => state.currency);
 
   // GraphQL
-  const { loading, error, data } = useQuery<CurrenciesType>(GET_ALL_CURRENCIES);
+  const { data } = useQuery<CurrenciesType>(GET_ALL_CURRENCIES);
 
   return (
     <CurrenciesDropDownWrapper

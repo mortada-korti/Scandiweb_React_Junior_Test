@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 // Parser
 import parse from "html-react-parser";
 
 // GraphQL
 import { useQuery } from "@apollo/client";
+import { addToCart } from "../../redux/cartSlice";
 import {
   AttributeType,
   GET_PRODUCT_INFO,
@@ -17,15 +18,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
+// Pages
+import NotFound from "../notFound/NotFound";
+
 // @mui
 import { Skeleton, Stack } from "@mui/material";
 
 // Styles
-import { RadioInput } from "../../components/attributes/Text";
-import { Input } from "../../components/attributes/Swatch";
+import { SwatchInput } from "../../components/attributes/Swatch";
+import { TextInput } from "../../components/attributes/Text";
 import {
   AttributeItemsContainer,
-  AttributeTitle,
 } from "../../components/attributes/style";
 import {
   AddToCartButton,
@@ -36,17 +39,13 @@ import {
   ProductDescription,
   ProductHeader,
   ProductInfo,
-  ProductName,
-  ProductPrice,
   SmallImgsContainer,
 } from "./style";
-import { addToCart } from "../../redux/cartSlice";
-import NotFound from "../notFound/NotFound";
 
 const Product = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
-  // const [loading, setGaga] = useState(true);
+
   // GraphQL
   const selectedCurrency = useSelector((state: RootState) => state.currency);
   const { loading, error, data } = useQuery<ProductInfoType>(GET_PRODUCT_INFO, {
@@ -56,6 +55,7 @@ const Product = () => {
     data?.product?.gallery[0]
   );
   let currencyIndex = 0;
+
   // Define Selected img & currency
   if (data && data.product !== null) {
     currencyIndex = data?.product.prices.findIndex(
@@ -147,7 +147,11 @@ const Product = () => {
                       loading ? (
                         "loading"
                       ) : (
-                        <Input key={index} value={item.value} w='32px' h='32px'>
+                        <SwatchInput
+                          key={index}
+                          value={item.value}
+                          w='32px'
+                          h='32px'>
                           <input
                             type='radio'
                             id={`custom-radio-${item.id}`}
@@ -155,21 +159,21 @@ const Product = () => {
                             className='visually-hidden'
                           />
                           <label htmlFor={`custom-radio-${item.id}`}></label>
-                        </Input>
+                        </SwatchInput>
                       )
                     )
                   : attribute.items.map((item, index) =>
                       loading ? (
                         <Skeleton key={index} width='63px' height='45px' />
                       ) : (
-                        <RadioInput
+                        <TextInput
                           className='radio-container'
                           w='63px'
                           h='45px'
                           key={index}>
                           <input type='radio' name={`${attribute.name}`} />
                           <label>{item.value}</label>
-                        </RadioInput>
+                        </TextInput>
                       )
                     )}
               </AttributeItemsContainer>

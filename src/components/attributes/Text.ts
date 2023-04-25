@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 
-export const RadioInput = styled("div")<any>(({ theme, w, h, fs, lh }) => ({
+export const TextInput = styled("div")<any>(({ theme, w, h, fs, lh }) => ({
   "&.radio-container": {
     display: "inline-block",
     position: "relative",
